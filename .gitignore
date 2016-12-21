@@ -1,1 +1,4 @@
 .idea
+updates.txt
+*.pyc
+simple_request.py
