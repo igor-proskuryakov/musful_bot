@@ -9,7 +9,7 @@ import datetime
 # db = mongo_client.test
 # collection = db.test_collection
 
-token = '<BOT.TOKEN>'
+token = '242338579:AAGYuS-JD3pBvEauocbIAO7BRUlCFjFcbjY'
 bot = Bot(token)
 result = bot.getUpdates(1)
 

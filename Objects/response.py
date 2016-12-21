@@ -18,8 +18,9 @@ class Response():
     def responseToMessage(self):
         self.method = 'sendmessage'
         self.message_text = u'Hello, '+self.response_to.fullname+'!' + \
-            '\nYou can try:' + \
-            '\n/dollar'
+            '\nYou can send me:' + \
+            '\n/start' +\
+            '\n for more information'
         self.json_data = {
             'chat_id': self.response_to.id,
             'text': self.message_text
