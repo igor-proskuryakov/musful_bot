@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import requests
-
+from Commands.commands_list import *
 
 class Response():
     def sendResponse(self):
@@ -31,7 +31,11 @@ class Response():
 
 
     def responseToCommand(self):
-        pass
+        self.method = 'sendmessage'
+        self.command = getCommand(self.update.command, self.update)
+        self.json_data = self.command.response
+        self.sendResponse()
+        return True
 
 
 

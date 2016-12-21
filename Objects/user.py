@@ -1,10 +1,11 @@
 class User():
     def __init__(self, user_info=None, login=None, username=None, userlastname=None, user_id=None):
         if user_info:
-            self.login = getattr(user_info, 'username', None)
+            self.login = user_info['username']
             self.id = user_info['id']
-            self.first_name = getattr(user_info, 'first_name', None)
-            self.last_name = getattr(user_info, 'last_name', None)
+            self.first_name = getattr(user_info, 'first_name', 'Mr.')
+            self.last_name = getattr(user_info, 'last_name', 'Smith')
+
             self.fullname = self.first_name + ' ' + self.last_name
         else:
             self.login = login

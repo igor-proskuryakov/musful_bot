@@ -40,6 +40,7 @@ class Update():
         self.user = User(self.update['from'])
         if (self.update['text'][0] == '/'):
             self.update_type = 'command'
+            self.command = self.update['text']
         else:
             self.update_type = 'message'
             self.message = Message(text=self.update['text'], user=self.user, id=self.update['message_id'], chat=self.update['chat'])

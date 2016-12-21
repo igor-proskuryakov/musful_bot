@@ -1,5 +1,6 @@
 import requests
 from Objects.bot import Bot
+from Commands.commands_list import *
 import pymongo
 import datetime
 
