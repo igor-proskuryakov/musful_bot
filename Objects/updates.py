@@ -1,6 +1,8 @@
+# coding=utf-8
 import datetime
 from user import User
 from message import Message
+from response import *
 
 
 
@@ -38,13 +40,21 @@ class Update():
         self.update = update[self.update_id]
         self.update_dt = datetime.datetime.fromtimestamp(int(self.update['date'])).strftime('%Y-%m-%d %H:%M:%S')
         self.user = User(self.update['from'])
-        if (self.update['text'][0] == '/'):
-            self.update_type = 'command'
-            self.command = self.update['text']
+        if 'text' in self.update.keys():
+            if (self.update['text'][0] == '/'):
+                self.update_type = 'command'
+                self.command = self.update['text']
+            else:
+                self.update_type = 'message'
+                self.message = Message(text=self.update['text'], user=self.user, id=self.update['message_id'], chat=self.update['chat'])
         else:
-            self.update_type = 'message'
-            self.message = Message(text=self.update['text'], user=self.user, id=self.update['message_id'], chat=self.update['chat'])
+            pass
 
+
+    #Отправка ответа на сообщение любого типа
+    def sendResponse(self, request_url):
+        response = newResponse(self)
+        response.send(request_url)
 
 
 

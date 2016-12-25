@@ -1,6 +1,6 @@
 import requests
 import updates
-from response import Response
+
 
 
 
@@ -13,9 +13,8 @@ def checkUpdates(check):
                 print ('You have NEW message!')
                 print (self.last_updates)
                 fresh_updates = [updates.Update(update) for update in self.last_updates]
-                for i in fresh_updates:
-                    response = Response(self.request_url, i)
-                    print i.update_dt, i.update_id, i.update_type, i.user.login
+                for fresh_update in fresh_updates:
+                    fresh_update.sendResponse(self.request_url)
             else:
                 print ('You have not messages :(')
             if check:
