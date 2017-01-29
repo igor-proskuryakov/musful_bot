@@ -7,7 +7,7 @@ COMMANDS = [
 
 class StartCommand():
     def __init__(self, update):
-        self.command_response = 'Hello, '+ update.user.fullname + '\ngiYou can choose one from the following commands:\n'
+        self.command_response = 'Hello, '+ update.user.fullname + '\nYou can choose one from the following commands:\n'
         for command in COMMANDS:
             self.command_response += command + '\n'
         self.response = {
