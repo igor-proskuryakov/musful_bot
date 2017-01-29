@@ -1,4 +1,5 @@
 .idea
 updates.txt
 *.pyc
+locals.pygit rm
 locals.py
