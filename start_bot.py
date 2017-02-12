@@ -1,8 +1,6 @@
-import requests
 from Objects.bot import Bot
 from locals import BOT_TOKEN
-from Commands.commands_list import *
-from multiprocessing import Pool
+
 
 
 token = BOT_TOKEN
