@@ -2,7 +2,12 @@ import requests
 from Objects.bot import Bot
 from locals import BOT_TOKEN
 from Commands.commands_list import *
+from multiprocessing import Pool
+
 
 token = BOT_TOKEN
-bot = Bot(token)
-result = bot.getUpdates(1)
+bot = Bot()
+bot.getUpdates(params={
+    'timeout': 1000,
+    'multiprocessing': True
+})

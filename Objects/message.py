@@ -1,4 +1,4 @@
-from chat import Chat
+from Objects.chat import Chat
 
 
 class Message():

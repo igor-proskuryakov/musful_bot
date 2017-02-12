@@ -1,64 +1,66 @@
 import requests
-import updates
+import Objects.updates as updates
+from multiprocessing import Pool
+from globals import API_URL, BOT_TOKEN
 
 
+def send(update):
+    rurl = API_URL + BOT_TOKEN
+    update.sendResponse(rurl)
+    print('Message sended!')
 
 
 def checkUpdates(check):
-    def checker(self, last_update_id):
-            last_update_id = self.last_update_id
-            print ('Last update ID is: %s' % last_update_id)
-            check(self, last_update_id)
-            if last_update_id != self.last_update_id:
-                print ('You have NEW message!')
-                print (self.last_updates)
-                fresh_updates = [updates.Update(update) for update in self.last_updates]
-                for fresh_update in fresh_updates:
-                    fresh_update.sendResponse(self.request_url)
+    def checker(self, last_update_id=1, params={}):
+        multiproc = params.get('multiprocessing') or False
+        try:
+            print('Last update ID is: %s' % last_update_id)
+            last_updated_id, last_updates = check(self, last_update_id, params)
+            if last_update_id != last_updated_id:
+                print('You have NEW message!')
+                print(last_updates)
+                fresh_updates = [updates.Update(update) for update in last_updates]
+                if multiproc:  # multiprocessing option
+                    with Pool(40) as p:
+                        p.map(send, fresh_updates)
+                else:  # single process option
+                    for fresh_update in fresh_updates:
+                        send(fresh_update)
             else:
-                print ('You have not messages :(')
-            if check:
-                checker(self, last_update_id)
-            return Exception
+                print('You have not messages :(')
+            if last_update_id:
+                checker(self, last_update_id=last_updated_id, params=params)
+        except:
+            raise Exception('Something wrong!')
+
     return checker
 
 
-
-
 class Bot():
-    def __init__(self, token):
-        self.api_url = 'https://api.telegram.org/bot'
-        self.token = token
-        self.request_url = self.api_url + self.token + '/'
+    def __init__(self):
         self.last_update_id = 1
 
-
-
-
-
-
     @checkUpdates
-    def getUpdates(self, last_update_id):
-        method = 'getupdates'
+    def getUpdates(self, last_update_id=1, params={}):
+        timeout = params.get('timeout') or 1000
+        method = params.get('method') or 'getupdates'
         json_data = {
-            'timeout': 1000,
+            'timeout': timeout,
             'offset': last_update_id + 1
         }
-        request = requests.post(self.request_url + method, json=json_data)
+        request = requests.post(API_URL + BOT_TOKEN + method, json=json_data)
         result_json = request.json()
         updates = [{update['update_id']: update['message']} for update in result_json['result']]
         if updates:
-            self.last_update_id = updates[-1].keys()[0]
-            self.last_updates = updates or None
-        return True
+            last_update_id = [k for k in updates[-1].keys()][0]
+        return last_update_id, updates
 
 
 
 
 
 
-
-    # def getUpdates(self):
+        # def getUpdates(self):
         # self.method = 'getupdates'
         # self.json_data = {
         #     'timeout': 1000,
@@ -70,21 +72,15 @@ class Bot():
         # self.updates = [{update['update_id']: update['message']} for update in self.result_json['result']]
         # return self.updates
 
-
-
-
-
-
     def sendMessage(self):
         self.method = 'sendmessage'
-        self.json_data  = {
+        self.json_data = {
             'chat_id': '187553232',
             'text': 'choose your answer',
             'parse_mode': 'markdown',
             'reply_markup': {
-                'inline_keyboard': [[{'text': 'yes', 'url': 'http://ya.ru'},{'text': 'No', 'url': 'http://ya.ru'}]]
-                }
+                'inline_keyboard': [[{'text': 'yes', 'url': 'http://ya.ru'}, {'text': 'No', 'url': 'http://ya.ru'}]]
             }
+        }
 
         self.request = requests.post(self.request_url + self.method, json=self.json_data)
-

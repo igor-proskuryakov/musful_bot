@@ -54,7 +54,7 @@ COMMANDS_LIST = {
 
 
 def getCommand(command, update):
-    print command
+    print(command)
     for row in COMMANDS_LIST.keys():
         if row == command:
             return COMMANDS_LIST[command](update)

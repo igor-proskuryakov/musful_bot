@@ -1,8 +1,8 @@
 # coding=utf-8
 import datetime
-from user import User
-from message import Message
-from response import *
+from Objects.user import User
+from Objects.message import Message
+from Objects.response import *
 
 
 
@@ -36,7 +36,7 @@ class Update():
 #         u'id': 187553232
 #     }
 # }}
-        self.update_id = update.keys()[0]
+        self.update_id = [ k for k in update.keys()][0]
         self.update = update[self.update_id]
         self.update_dt = datetime.datetime.fromtimestamp(int(self.update['date'])).strftime('%Y-%m-%d %H:%M:%S')
         self.user = User(self.update['from'])
