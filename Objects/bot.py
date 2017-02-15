@@ -41,46 +41,30 @@ class Bot():
         self.last_update_id = 1
 
     @checkUpdates
-    def getUpdates(self, last_update_id=1, params={}):
+    def getUpdates(self, last_update_id=1, params=None):
+        if params is None:
+            params = dict()
+        method = 'getupdates'
         timeout = params.get('timeout') or 1000
-        method = params.get('method') or 'getupdates'
+        limit = params.get('limit') or 1000
+        allowed_updates = params.get('allowed_updates') or [
+            'message',
+            'edited_message',
+            'channel_post',
+            'edited_channel_post',
+            'inline_query',
+            'chosen_inline_result',
+            'callback_query'
+        ]
         json_data = {
             'timeout': timeout,
-            'offset': last_update_id + 1
+            'offset': last_update_id + 1,
+            'limit': limit,
+            'allowed_updates': allowed_updates
         }
         request = requests.post(API_URL + BOT_TOKEN + method, json=json_data)
         result_json = request.json()
         updates = [{update['update_id']: update['message']} for update in result_json['result']]
         if updates:
-            last_update_id = [k for k in updates[-1].keys()][0]
+            last_update_id = max([res['update_id'] for res in result_json['result']])
         return last_update_id, updates
-
-
-
-
-
-
-        # def getUpdates(self):
-        # self.method = 'getupdates'
-        # self.json_data = {
-        #     'timeout': 1000,
-        #     'offset': 648551930
-        # }
-        # self.request = requests.post(self.request_url + self.method,json=self.json_data)
-        # print self.request_url+self.method
-        # self.result_json = self.request.json()
-        # self.updates = [{update['update_id']: update['message']} for update in self.result_json['result']]
-        # return self.updates
-
-    def sendMessage(self):
-        self.method = 'sendmessage'
-        self.json_data = {
-            'chat_id': '187553232',
-            'text': 'choose your answer',
-            'parse_mode': 'markdown',
-            'reply_markup': {
-                'inline_keyboard': [[{'text': 'yes', 'url': 'http://ya.ru'}, {'text': 'No', 'url': 'http://ya.ru'}]]
-            }
-        }
-
-        self.request = requests.post(self.request_url + self.method, json=self.json_data)
