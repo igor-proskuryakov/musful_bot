@@ -1,68 +1,51 @@
 # -*- coding: utf-8 -*-
 
-import requests
-from Commands.commands_list import *
+from Objects.sender import Sender
 
 
-def sendResponse(response_url, method, json_data):
-    request = requests.post(response_url + method, json=json_data)
-    return True
+class BadRequest:
 
-
-class BadRequest():
-    def send(self, response_url):
-        pass
-
-    def __init__(self, update):
+    def __init__(self, data):
+        text = "Sorry, i can't help you"
         self.method = 'sendmessage'
-        pass
-
-
-class MessageResponse():
-    def send(self, response_url):
-        sendResponse(response_url, self.method, self.json_data)
-
-    def responseToMessage(self):
-        self.method = 'sendmessage'
-        self.message_text = u'Hello, ' + self.response_to.fullname + '!' + \
-                            u'\nSend me /start command for more information.'
-        self.json_data = {
-            'chat_id': self.response_to.id,
-            'text': self.message_text
+        self.data = {
+            'chat_id': data.chat.id,
+            'text': text,
+            'reply_to_message_id': data.id
         }
-        return True
 
+
+class MessageResponse:
     def __init__(self, update):
-        self.response_to = update.user
         self.type = 'MessageResponse'
-        self.update = update
-        self.responseToMessage()
 
 
 class CommandResponse:
-    def send(self, response_url):
-        sendResponse(response_url, self.method, self.json_data)
-
-    def responseToCommand(self):
-        self.method = 'sendmessage'
-        self.command = getCommand(self.update.command, self.update)
-        self.json_data = self.command.response
-
-        return True
-
     def __init__(self, update):
         self.type = 'CommandResponse'
-        self.response_to = update.user
-        self.update = update
-        self.responseToCommand()
 
 
-def newResponse(update):
-    responses = {
-        'command': CommandResponse,
-        'message': MessageResponse
-    }
-    if not getattr(update, 'update_type', None) or getattr(update, 'update_type', None) not in responses:
-        return BadRequest(update)
-    else:
-        return responses[update.update_type](update)
+RESPONSE_MAP = {
+    'message': MessageResponse,
+    'command': CommandResponse
+}
+
+
+class Response(MessageResponse, CommandResponse, BadRequest):
+    def assign_response_type(self, data_type=None):
+        response_type = RESPONSE_MAP.get(data_type)
+        if response_type:
+            return response_type
+        return BadRequest
+
+    def make_response(self):
+        sender = Sender(self)
+        sender.send()
+
+    def __init__(self, data):
+        self.response_type = self.assign_response_type(data_type=None)
+        print(self.response_type)
+        self.response_type.__init__(self, data)
+        self.make_response()
+
+

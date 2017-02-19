@@ -1,10 +1,5 @@
 # coding=utf-8
-import datetime
-from Objects.user import User
 from Objects.message import Message
-from Objects.response import *
-from globals import REQUEST_URL
-from globals import ALL_UPDATES_TYPES
 
 
 # Класс оставлен для возможного будущего наследования
@@ -17,7 +12,6 @@ class MessageUpdate():
         try:
             self.update_id = update['update_id']
             self.message = Message(update['message'])
-            self.update = update
         except:
             raise Exception('Update params not founded!')
 

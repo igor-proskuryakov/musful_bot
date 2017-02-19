@@ -26,8 +26,7 @@ class Bot():
         print(json_data)
         request = requests.post(REQUEST_URL + method, json=json_data)
         result_json = request.json()
-        with open('debug.txt', 'a') as debug:
-            json.dump(result_json, debug)
+        json.dump(result_json, open('debug.txt', 'a'))
         updates = [upd_data for upd_data in result_json['result']]
         if updates:
             self.last_update_id = max([res['update_id'] for res in result_json['result']])

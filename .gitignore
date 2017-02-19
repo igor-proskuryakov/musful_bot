@@ -1,5 +1,6 @@
 .idea
-updates.txt
+*.txt
 *.pyc
 locals.pygit rm
 locals.py
+*.json
